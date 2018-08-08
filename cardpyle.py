@@ -1,29 +1,47 @@
+####### Static stuff first #######
+
+# A master list of the standard playing card cards
+card_list = []
+for suit in ['h','d','c','s']:
+	for no in ['A'] + list(range(2,11)) + ['J','Q','K']:
+		card_list.append([no,suit])
+
+# Suit lookup dictionary
+suit_lookup = {'h': 'Hearts', 'd':'Diamonds', 's':'Spades', 'c':'Clubs'}
+
+# Card (no.) lookup dictionary
+card_name = {'J':'Jack','Q':'Queen','K':'King','A':'Ace'}
+for i in range(2,11):
+	card_name[str(i)]=str(i)
+	
+# Card index lookup dictionary
+card_lookup = {}
+for i,c in enumerate(card_list):
+	card_lookup[i] = c
+
+
 class Card:
+	'''
+	A class that represents a single card
+	'''
 	def __init__(self, no, suit):
+		# The card number
 		self.no = str(no).upper()
-		self.suit = suit_map(suit)
+		
+		# The card suit
+		self.suit = suit
+		
+		# Whether the card is face_up or not
 		self.face_up = False
 
 	def __str__(self):
-		return "The {0} of {1}".format(card_name[self.no], suit_map(self.suit))
+		return "The {0} of {1}".format(card_name[self.no], suit_lookup[self.suit])
 
 	def flip(self):
 		self.face_up = not(self.face_up)
 
-	
-def suit_map(s):
-	if type(s) != str:
-		return 'Error'
-	suit = s[0].lower()
 
-	if suit == 'h':
-		return "Hearts"
-	elif suit == 'd':
-		return "Diamonds"
-	elif suit == 's':
-		return "Spades"
-	elif suit == 'c':
-		return "Clubs"
+
 
 class Pile:
  	''' A pile takes a list of cards
@@ -50,41 +68,41 @@ class Pile:
  	def __str__(self):
  		''' Defines what happens when you apply the print function
  		'''
-
- 		out =[]
  		for card in self.cards:
- 			out.append(card.no + "," + card.suit +  "\n")
- 		return "".join(out)
+ 			print(card)
+ 		return "(That's all of em!)"
 
 
 
- 	def shuffle(self):
+ 	def shuffle(self,silent = False):
  		import random
  		random.shuffle(self.cards)
 
- 	def random_deck():
- 		self.cards = fresh_deck()
- 		self.shuffle()
+ 		if silent == True:
+ 			pass
+ 		else:
+ 			return self
 
-	
+
+ 	def shuffled(self):
+ 		import random
+ 		random.shuffle(self.cards)
 
 
-card_list = []
-for suit in ['h','d','c','s']:
-	for no in ['A'] + list(range(2,11)) + ['J','Q','K']:
-		card_list.append([no,suit])
+ 	def flip_all(self):
+ 		for card in self.cards:
+ 			card.flip()
+ 		
+ 	def draw(self,k=1):
+ 		draw = self.cards[0:k]
+ 		self.cards = self.cards[k:]
+ 		return draw
 
-N = len(card_list)
 
-# Lookup card from index
-card_lookup = {}
-for i,c in enumerate(card_list):
-	card_lookup[i] = c
 
-# Lookup suits
-card_name = {'J':'Jack','Q':'Queen','K':'King','A':'Ace'}
-for i in range(2,11):
-	card_name[str(i)]=str(i)
+
+
+
 
 
 
@@ -93,22 +111,22 @@ def fresh_deck():
 	Returns a full, new, unshuffled deck
 	'''
 	
-	return Pile([Card(c) for c in card_list])
+	return Pile([Card(c[0],c[1]) for c in card_list])
 
-
- # class Hand:
-
- # 	def __init__(self,cards=[]):
 
 def random_cards(n=1,replace=False):
 	import numpy as np
 
-	pick = np.random.choice(range(N),size=n,replace=replace)
+	pick = np.random.choice(range(52),size=n,replace=replace)
 
 	return [Card(card_lookup[i][0],card_lookup[i][1]) for i in pick]
 
 def random_card():
 	import numpy as np
-	pick = np.random.randint(0,N)
+	pick = np.random.randint(0,52)
 	c = card_lookup[pick]
 	return Card(c[0],c[1])
+
+
+class Game:
+	pass
