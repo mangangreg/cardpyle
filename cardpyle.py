@@ -5,7 +5,7 @@ class Card:
 		self.face_up = False
 
 	def __str__(self):
-		return "The {0} of {1}".format(self.no, suit_map(self.suit))
+		return "The {0} of {1}".format(card_name[self.no], suit_map(self.suit))
 
 	def flip(self):
 		self.face_up = not(self.face_up)
@@ -53,7 +53,7 @@ class Pile:
 
  		out =[]
  		for card in self.cards:
- 			out.append(card.suit+ "," + card.no + "\n")
+ 			out.append(card.no + "," + card.suit +  "\n")
  		return "".join(out)
 
 
@@ -67,22 +67,48 @@ class Pile:
  		self.shuffle()
 
 	
- class 
+
+
+card_list = []
+for suit in ['h','d','c','s']:
+	for no in ['A'] + list(range(2,11)) + ['J','Q','K']:
+		card_list.append([no,suit])
+
+N = len(card_list)
+
+# Lookup card from index
+card_lookup = {}
+for i,c in enumerate(card_list):
+	card_lookup[i] = c
+
+# Lookup suits
+card_name = {'J':'Jack','Q':'Queen','K':'King','A':'Ace'}
+for i in range(2,11):
+	card_name[str(i)]=str(i)
+
 
 
 def fresh_deck():
 	'''
 	Returns a full, new, unshuffled deck
 	'''
-	card_list = []
-
-	for suit in ['h','d','c','s']:
-		for no in ['A'] + list(range(2,11)) + ['J','Q','K']:
-			card_list.append(Card(suit,no))
-	return Pile(card_list)
+	
+	return Pile([Card(c) for c in card_list])
 
 
  # class Hand:
 
  # 	def __init__(self,cards=[]):
 
+def random_cards(n=1,replace=False):
+	import numpy as np
+
+	pick = np.random.choice(range(N),size=n,replace=replace)
+
+	return [Card(card_lookup[i][0],card_lookup[i][1]) for i in pick]
+
+def random_card():
+	import numpy as np
+	pick = np.random.randint(0,N)
+	c = card_lookup[pick]
+	return Card(c[0],c[1])
