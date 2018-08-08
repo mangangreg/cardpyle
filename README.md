@@ -1,0 +1,1 @@
+This is a package that models a deck of cards and can be imported to build cardgames.
